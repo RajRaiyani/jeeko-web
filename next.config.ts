@@ -1,7 +1,24 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3007",
+        pathname: "/files/**",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "3007",
+        pathname: "/files/**",
+      },
+    ],
+    // Allow unoptimized images in development to bypass private IP restrictions
+    unoptimized: process.env.NODE_ENV === "development",
+  },
 };
 
 export default nextConfig;
