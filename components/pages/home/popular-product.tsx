@@ -242,7 +242,7 @@ export default function PopularProduct() {
                     {product.points && product.points.length >= 3 ? (
                       <ul className="mt-2 text-xs md:text-sm text-green-700 space-y-0 flex-grow">
                         {product.points
-                          .slice(0, 3)
+                          .slice(0, 5)
                           .map((point: string, idx: number) => (
                             <li key={idx} className="flex items-center gap-2">
                               <span className="text-primary mt-0.5 bg-green-700 size-2 rounded-full flex-shrink-0"></span>
