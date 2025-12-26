@@ -2,12 +2,25 @@
 
 import { useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ChevronLeft, ChevronRight, Tag, Package } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Tag, Package, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useProduct } from "@/hooks/useProducts";
+import { useCreateInquiry, type CreateInquiryData } from "@/hooks/useInquiry";
 
 // Type definitions
 interface ProductImage {
@@ -39,9 +52,29 @@ interface Product {
   sale_price_in_rupees?: number;
   created_at?: string;
   updated_at?: string;
+  points?: string[];
   category?: ProductCategory;
   images?: ProductImage[];
 }
+
+// Inquiry form schema
+const inquiryFormSchema = z.object({
+  fullname: z
+    .string()
+    .min(1, "Full name is required")
+    .max(100, "Full name cannot exceed 100 characters"),
+  phonenumber: z
+    .string()
+    .min(1, "Phone number is required")
+    .max(20, "Phone number cannot exceed 20 characters"),
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Invalid email address")
+    .max(100, "Email cannot exceed 100 characters"),
+});
+
+type InquiryFormValues = z.infer<typeof inquiryFormSchema>;
 
 // Skeleton Component
 function ProductDetailSkeleton() {
@@ -92,6 +125,26 @@ export default function ProductDetailPage() {
   const { data: productResponse, isLoading, error } = useProduct(productId);
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [isInquiryDialogOpen, setIsInquiryDialogOpen] = useState(false);
+  const [formSuccess, setFormSuccess] = useState(false);
+  const [formError, setFormError] = useState<string>("");
+
+  const createInquiryMutation = useCreateInquiry();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<InquiryFormValues>({
+    resolver: zodResolver(inquiryFormSchema),
+    mode: "onChange",
+    defaultValues: {
+      fullname: "",
+      phonenumber: "",
+      email: "",
+    },
+  });
 
   // Extract product from API response
   const product: Product | undefined = useMemo(() => {
@@ -148,6 +201,49 @@ export default function ProductDetailPage() {
     setSelectedImageIndex((prev) =>
       prev < productImages.length - 1 ? prev + 1 : 0
     );
+  };
+
+  // Handle inquiry form submission
+  const handleInquirySubmit = async (data: InquiryFormValues) => {
+    try {
+      setFormError("");
+      setFormSuccess(false);
+
+      // Prepare submission data with product name in the message field
+      const submissionData: CreateInquiryData = {
+        fullname: data.fullname.trim(),
+        phonenumber: data.phonenumber.trim(),
+        email: data.email.trim().toLowerCase(),
+        description: `Inquiry for product: ${product?.name || "Product"}`,
+      };
+
+      await createInquiryMutation.mutateAsync(submissionData);
+
+      setFormSuccess(true);
+      reset();
+
+      // Close dialog after 2 seconds
+      setTimeout(() => {
+        setIsInquiryDialogOpen(false);
+        setFormSuccess(false);
+      }, 2000);
+    } catch (error: unknown) {
+      const apiError = error as {
+        response?: {
+          data?: {
+            error?: string;
+            details?: string | string[];
+          };
+        };
+        message?: string;
+      };
+      const errorMessage =
+        apiError.response?.data?.error ||
+        apiError.response?.data?.details?.[0] ||
+        apiError.message ||
+        "Failed to submit inquiry. Please try again.";
+      setFormError(errorMessage);
+    }
   };
 
   // Loading state
@@ -280,6 +376,23 @@ export default function ProductDetailPage() {
               </span>
             </div>
 
+            {/* Key Features (Points) */}
+            {product.points && product.points.length >= 2 && (
+              <div className="space-y-3">
+                <h2 className="text-xl font-semibold text-slate-900">
+                  Key Features
+                </h2>
+                <ul className="text-md sm:text-base text-green-700 space-y-2">
+                  {product.points.map((point, idx) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      <span className="bg-green-700 size-2 rounded-full flex-shrink-0"></span>
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {/* Description */}
             {product.description && (
               <div className="space-y-3">
@@ -344,10 +457,7 @@ export default function ProductDetailPage() {
               <Button
                 size="lg"
                 className="flex-1 text-base sm:text-lg py-6 sm:py-7"
-                onClick={() => {
-                  // TODO: Add to cart or inquiry functionality
-                  window.location.href = `/contact?product=${product.id}`;
-                }}
+                onClick={() => setIsInquiryDialogOpen(true)}
               >
                 <Package className="h-5 w-5 mr-2" />
                 Request Inquiry
@@ -397,6 +507,125 @@ export default function ProductDetailPage() {
           </div>
         )}
       </div>
+
+      {/* Inquiry Dialog */}
+      <Dialog open={isInquiryDialogOpen} onOpenChange={setIsInquiryDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Request Inquiry</DialogTitle>
+            <DialogDescription>
+              Fill in your details to request more information about this product.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmit(handleInquirySubmit)} className="space-y-4 mt-4">
+            {/* Success Message */}
+            {formSuccess && (
+              <div className="p-3 rounded-lg bg-green-50 border border-green-200 text-green-800 text-sm">
+                Inquiry submitted successfully! We'll get back to you soon.
+              </div>
+            )}
+
+            {/* Error Message */}
+            {formError && (
+              <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-800 text-sm">
+                {formError}
+              </div>
+            )}
+
+            {/* Full Name */}
+            <div className="space-y-2">
+              <Label htmlFor="fullname">
+                Full Name <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="fullname"
+                type="text"
+                placeholder="Enter your full name"
+                {...register("fullname")}
+                disabled={isSubmitting}
+                className={errors.fullname ? "border-red-500" : ""}
+              />
+              {errors.fullname && (
+                <p className="text-sm text-red-500">{errors.fullname.message}</p>
+              )}
+            </div>
+
+            {/* Email */}
+            <div className="space-y-2">
+              <Label htmlFor="email">
+                Email <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                {...register("email")}
+                disabled={isSubmitting}
+                className={errors.email ? "border-red-500" : ""}
+              />
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email.message}</p>
+              )}
+            </div>
+
+            {/* Phone Number */}
+            <div className="space-y-2">
+              <Label htmlFor="phonenumber">
+                Phone Number <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="phonenumber"
+                type="tel"
+                placeholder="Enter your phone number"
+                {...register("phonenumber")}
+                disabled={isSubmitting}
+                className={errors.phonenumber ? "border-red-500" : ""}
+              />
+              {errors.phonenumber && (
+                <p className="text-sm text-red-500">{errors.phonenumber.message}</p>
+              )}
+            </div>
+
+            {/* Product Name Display */}
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+              <p className="text-xs text-slate-500 mb-1">Product:</p>
+              <p className="text-sm font-medium text-slate-900">{product.name}</p>
+            </div>
+
+            {/* Submit Button */}
+            <div className="flex gap-3 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setIsInquiryDialogOpen(false);
+                  reset();
+                  setFormError("");
+                  setFormSuccess(false);
+                }}
+                disabled={isSubmitting}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="flex-1"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  "Submit Inquiry"
+                )}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight, Search, X, Filter } from "lucide-react";
+import { Search, X, Filter } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -48,6 +48,7 @@ interface Product {
   sale_price_in_rupees?: number;
   created_at?: string;
   updated_at?: string;
+  points?: string[];
   category?: ProductCategory;
   images?: ProductImage[];
 }
@@ -130,11 +131,22 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             {product.name}
           </h3>
 
-          {/* Description */}
-          {product.description && (
-            <p className="text-xs sm:text-sm text-slate-500 line-clamp-2">
-              {product.description}
-            </p>
+          {/* Points or Description */}
+          {product.points && product.points.length >= 2 ? (
+            <ul className="text-md sm:text-base text-green-700 space-y-0">
+              {product.points.slice(0, 2).map((point, idx) => (
+                <li key={idx} className="flex items-center gap-2">
+                  <span className="text-primary mt-0.5 bg-green-700 size-2 rounded-full"></span>
+                  <span className="line-clamp-1">{point}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            product.description && (
+              <p className="text-xs sm:text-sm text-slate-500 line-clamp-2">
+                {product.description}
+              </p>
+            )
           )}
 
           {/* Price and CTA */}
