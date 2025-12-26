@@ -18,12 +18,21 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "server.jeeko.com",
-        port: "443",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "server.jeeko.com",
         pathname: "/**",
       },
     ],
-    // Allow unoptimized images in development to bypass private IP restrictions
-    unoptimized: process.env.NODE_ENV === "development",
+    // Disable image optimization to ensure images load in production
+    // If you have a Next.js image optimization service, you can set this to false
+    unoptimized: true,
+    // Allow SVG images
+    // dangerouslyAllowSVG: true,
+    // contentDispositionType: "attachment",
+    // contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 };
 
