@@ -37,6 +37,7 @@ interface Product {
   sale_price_in_rupees?: number;
   created_at?: string;
   updated_at?: string;
+  points?: string[];
   category?: ProductCategory;
   images?: ProductImage[];
 }
@@ -237,10 +238,25 @@ export default function PopularProduct() {
                       {product.name}
                     </h3>
 
-                    {/* Description */}
-                    <p className="mt-2 text-xs md:text-sm text-slate-500 flex-grow line-clamp-3">
-                      {product.description}
-                    </p>
+                    {/* Points or Description */}
+                    {product.points && product.points.length >= 3 ? (
+                      <ul className="mt-2 text-xs md:text-sm text-green-700 space-y-0 flex-grow">
+                        {product.points
+                          .slice(0, 3)
+                          .map((point: string, idx: number) => (
+                            <li key={idx} className="flex items-center gap-2">
+                              <span className="text-primary mt-0.5 bg-green-700 size-2 rounded-full flex-shrink-0"></span>
+                              <span className="line-clamp-1">{point}</span>
+                            </li>
+                          ))}
+                      </ul>
+                    ) : (
+                      product.description && (
+                        <p className="mt-2 text-xs md:text-sm text-slate-500 flex-grow line-clamp-3">
+                          {product.description}
+                        </p>
+                      )
+                    )}
 
                     {/* Price + CTA */}
                     <div className="mt-4 flex items-center justify-between">
