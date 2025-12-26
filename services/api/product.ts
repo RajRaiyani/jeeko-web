@@ -18,7 +18,8 @@ export async function listProducts(params?: {
   return axiosInstance({ method: "GET", url, params: filteredParams });
 }
 
-export async function getProduct(id: string) {
+
+export async function getProduct(id: string): Promise<any> {
   const url = `/products/${id}`;
   return axiosInstance({ method: "GET", url });
 }

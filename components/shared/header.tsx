@@ -49,7 +49,7 @@ const ListItem = React.forwardRef<HTMLAnchorElement, ListItemProps>(
 ListItem.displayName = "ListItem";
 
 interface ProductCategory {
-  _id: string;
+  id: string;
   name: string;
 }
 
@@ -117,9 +117,9 @@ export default function Header({ className }: HeaderProps) {
                         <ul className="space-y-1">
                           {categories.map((category) => (
                             <ListItem
-                              key={category._id}
+                              key={category.id}
                               title={category.name}
-                              href={`/products?category=${category._id}`}
+                              href={`/products?category=${category.id}`}
                               className="text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium"
                             />
                           ))}
@@ -270,8 +270,8 @@ export default function Header({ className }: HeaderProps) {
                   <div className="ml-4 mt-2 space-y-1">
                     {categories.map((category) => (
                       <Link
-                        key={category._id}
-                        href={`/products?category=${category._id}`}
+                        key={category.id}
+                        href={`/products?category=${category.id}`}
                         className="block py-2 px-3 rounded-lg hover:bg-gray-50 text-sm text-gray-600 transition-all duration-200 transform hover:translate-x-1"
                         onClick={() => setMobileMenuOpen(false)}
                       >

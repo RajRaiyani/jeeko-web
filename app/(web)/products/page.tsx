@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -247,7 +247,7 @@ function CategoryFilter({
   );
 }
 
-export default function ProductsPage() {
+function ProductsPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState(
@@ -541,5 +541,29 @@ export default function ProductsPage() {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense
+      fallback={
+        <section className="w-full min-h-screen px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-6 sm:mb-8">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-2 px-2">
+                Our Products
+              </h1>
+              <div className="w-24 sm:w-32 h-1 bg-primary mx-auto mb-4 sm:mb-6"></div>
+              <p className="text-center text-slate-600 max-w-2xl mx-auto text-sm sm:text-base px-4">
+                Loading...
+              </p>
+            </div>
+          </div>
+        </section>
+      }
+    >
+      <ProductsPageContent />
+    </Suspense>
   );
 }

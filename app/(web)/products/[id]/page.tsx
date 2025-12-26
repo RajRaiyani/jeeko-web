@@ -7,7 +7,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ChevronLeft, ChevronRight, Tag, Package, Loader2 } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  Tag,
+  Package,
+  Loader2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -122,7 +129,7 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const productId = params?.id as string;
 
-  const { data: productResponse, isLoading, error } = useProduct(productId);
+  const { data: product, isLoading, error } = useProduct(productId);
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isInquiryDialogOpen, setIsInquiryDialogOpen] = useState(false);
@@ -147,28 +154,19 @@ export default function ProductDetailPage() {
   });
 
   // Extract product from API response
-  const product: Product | undefined = useMemo(() => {
-    if (!productResponse) return undefined;
-    if (Array.isArray(productResponse)) {
-      return productResponse[0];
-    }
-    if (
-      typeof productResponse === "object" &&
-      "data" in productResponse &&
-      !Array.isArray(productResponse.data)
-    ) {
-      return productResponse.data as Product;
-    }
-    return productResponse as Product;
-  }, [productResponse]);
 
   // Get all product images
   const productImages = useMemo(() => {
     if (!product?.images || product.images.length === 0) {
-      return [{ url: "/images/placeholder-product.png", alt: product?.name || "Product" }];
+      return [
+        {
+          url: "/images/placeholder-product.png",
+          alt: product?.name || "Product",
+        },
+      ];
     }
 
-    return product.images.map((img) => {
+    return product.images.map((img: ProductImage) => {
       if (img.image?.url) {
         return { url: img.image.url, alt: img.alt || product.name };
       }
@@ -327,7 +325,7 @@ export default function ProductDetailPage() {
             {/* Thumbnail Gallery */}
             {productImages.length > 1 && (
               <div className="grid grid-cols-4 gap-2 sm:gap-3">
-                {productImages.map((img, index) => (
+                {productImages.map((img: ProductImage, index: number) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImageIndex(index)}
@@ -339,8 +337,8 @@ export default function ProductDetailPage() {
                     aria-label={`View image ${index + 1}`}
                   >
                     <Image
-                      src={img.url}
-                      alt={img.alt}
+                      src={img.url || ""}
+                      alt={img.alt || ""}
                       fill
                       className="object-contain p-2"
                       sizes="(max-width: 640px) 25vw, 12.5vw"
@@ -383,7 +381,7 @@ export default function ProductDetailPage() {
                   Key Features
                 </h2>
                 <ul className="text-md sm:text-base text-green-700 space-y-2">
-                  {product.points.map((point, idx) => (
+                  {product.points.map((point: string, idx: number) => (
                     <li key={idx} className="flex items-center gap-2">
                       <span className="bg-green-700 size-2 rounded-full flex-shrink-0"></span>
                       <span>{point}</span>
@@ -410,7 +408,7 @@ export default function ProductDetailPage() {
               <div className="space-y-3">
                 <h2 className="text-xl font-semibold text-slate-900">Tags</h2>
                 <div className="flex flex-wrap gap-2">
-                  {product.tags.map((tag, index) => (
+                  {product.tags.map((tag: string, index: number) => (
                     <span
                       key={index}
                       className="inline-flex items-center px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-sm font-medium"
@@ -514,14 +512,18 @@ export default function ProductDetailPage() {
           <DialogHeader>
             <DialogTitle>Request Inquiry</DialogTitle>
             <DialogDescription>
-              Fill in your details to request more information about this product.
+              Fill in your details to request more information about this
+              product.
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleSubmit(handleInquirySubmit)} className="space-y-4 mt-4">
+          <form
+            onSubmit={handleSubmit(handleInquirySubmit)}
+            className="space-y-4 mt-4"
+          >
             {/* Success Message */}
             {formSuccess && (
               <div className="p-3 rounded-lg bg-green-50 border border-green-200 text-green-800 text-sm">
-                Inquiry submitted successfully! We'll get back to you soon.
+                Inquiry submitted successfully! We&apos;ll get back to you soon.
               </div>
             )}
 
@@ -546,7 +548,9 @@ export default function ProductDetailPage() {
                 className={errors.fullname ? "border-red-500" : ""}
               />
               {errors.fullname && (
-                <p className="text-sm text-red-500">{errors.fullname.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.fullname.message}
+                </p>
               )}
             </div>
 
@@ -582,14 +586,18 @@ export default function ProductDetailPage() {
                 className={errors.phonenumber ? "border-red-500" : ""}
               />
               {errors.phonenumber && (
-                <p className="text-sm text-red-500">{errors.phonenumber.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.phonenumber.message}
+                </p>
               )}
             </div>
 
             {/* Product Name Display */}
             <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
               <p className="text-xs text-slate-500 mb-1">Product:</p>
-              <p className="text-sm font-medium text-slate-900">{product.name}</p>
+              <p className="text-sm font-medium text-slate-900">
+                {product.name}
+              </p>
             </div>
 
             {/* Submit Button */}
@@ -608,11 +616,7 @@ export default function ProductDetailPage() {
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex-1"
-              >
+              <Button type="submit" disabled={isSubmitting} className="flex-1">
                 {isSubmitting ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -629,4 +633,3 @@ export default function ProductDetailPage() {
     </div>
   );
 }
-

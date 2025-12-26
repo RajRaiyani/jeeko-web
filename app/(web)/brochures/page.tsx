@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useRef, type RefObject } from "react";
+import { useRef } from "react";
 import banner from "@/public/images/banners/brochures.png";
 
 interface Brochure {
@@ -37,7 +37,7 @@ const brochures: Brochure[] = [
 ];
 
 export default function BrochuresPage() {
-  const containerRef: RefObject<HTMLElement> = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLElement>(null);
 
   // All GSAP animations removed
 
