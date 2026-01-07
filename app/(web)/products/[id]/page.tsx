@@ -14,7 +14,9 @@ import {
   Tag,
   Package,
   Loader2,
+  Phone,
 } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -460,6 +462,42 @@ export default function ProductDetailPage() {
                 <Package className="h-5 w-5 mr-2" />
                 Request Inquiry
               </Button>
+              <a
+                href={`https://wa.me/919925232951?text=${encodeURIComponent(
+                  `Hello, I would like to inquire about: ${product.name}`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1"
+              >
+                <Button
+                  size="lg"
+                  className="w-full bg-[#25D366] hover:bg-[#1ebe5d] text-white text-base sm:text-lg py-6 sm:py-7"
+                >
+                  <FaWhatsapp className="h-5 w-5 mr-2" />
+                  Enquire on WhatsApp
+                </Button>
+              </a>
+            </div>
+
+            {/* Phone Number */}
+            <div className="pt-4">
+              <a
+                href="tel:+919925232951"
+                className="group flex items-center gap-3 w-full px-6 py-3 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-primary/30 transition-all duration-200 shadow-sm hover:shadow-md"
+              >
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors shrink-0">
+                  <Phone className="h-5 w-5 text-primary" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs text-slate-500 font-medium">
+                    Call us directly
+                  </span>
+                  <span className="text-base sm:text-lg font-semibold text-slate-900 group-hover:text-primary transition-colors">
+                    +91 99252 32951
+                  </span>
+                </div>
+              </a>
             </div>
 
             {/* Additional Info */}
