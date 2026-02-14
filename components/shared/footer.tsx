@@ -185,10 +185,21 @@ export default function Footer() {
       </div>
 
       {/* Copyright Section */}
-      <div className="w-full bg-primary/10 py-4 text-center text-xs text-gray-600 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          &copy; {new Date().getFullYear()} Jeeko Agro Industries. All rights
-          reserved.
+      <div className="w-full bg-primary/10 py-4 text-xs text-gray-600 border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <span className="text-center sm:text-left">
+            &copy; {new Date().getFullYear()} Jeeko Agro Industries. All rights
+            reserved.
+          </span>
+          <a
+            href="https://rajraiyani.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] sm:text-xs text-gray-400 hover:text-gray-500 transition-colors shrink-0"
+            aria-label="Developer website"
+          >
+            rajraiyani.com
+          </a>
         </div>
       </div>
     </footer>
