@@ -161,16 +161,6 @@ export default function Footer() {
             <Button
               className="rounded-full w-8 h-8 sm:w-10 sm:h-10"
               size="icon"
-              aria-label="YouTube"
-              onClick={() =>
-                window.open("https://www.youtube.com/@prostarcnc7217")
-              }
-            >
-              <Youtube className="w-4 h-4 sm:w-5 sm:h-5" />
-            </Button>
-            <Button
-              className="rounded-full w-8 h-8 sm:w-10 sm:h-10"
-              size="icon"
               aria-label="LinkedIn"
               onClick={() =>
                 window.open(
