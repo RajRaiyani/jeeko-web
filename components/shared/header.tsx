@@ -98,6 +98,15 @@ export default function Header({ className }: HeaderProps) {
                   <Link href="/about">About us</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
+              <NavigationMenuItem className="flex items-center">
+                <Link
+                  href="/kishan-king"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs xl:text-sm font-bold bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white hover:from-[#2D6A4F] hover:to-[#40916C] shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5 ml-2 mr-1 cursor-pointer select-none"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-yellow-400 animate-pulse shrink-0" />
+                  Kishan King
+                </Link>
+              </NavigationMenuItem>
 
               {/* Products with Category Dropdown */}
               <NavigationMenuItem className="nav-item">
@@ -253,6 +262,14 @@ export default function Header({ className }: HeaderProps) {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 About Us
+              </Link>
+              <Link
+                href="/kishan-king"
+                className="my-1.5 mx-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white text-base font-bold flex items-center gap-2 transition-all duration-200 shadow hover:shadow-md hover:translate-x-0.5"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <span className="h-2 w-2 rounded-full bg-yellow-400 animate-pulse shrink-0" />
+                Kishan King
               </Link>
 
               {/* Products Section with Categories - Mobile View */}

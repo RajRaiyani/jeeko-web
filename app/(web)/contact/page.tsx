@@ -1,8 +1,40 @@
+import type { Metadata } from "next";
 import { IoCall } from "react-icons/io5";
 import { IoMdMail } from "react-icons/io";
 import { FaRegClock, FaLocationDot, FaWhatsapp } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import { ContactForm } from "@/components/pages/contact/ContactForm";
+
+const SITE_NAME = "Jeeko Agro Industries";
+
+export const metadata: Metadata = {
+  title: "Contact Us | Sales, Support & Dealership Inquiries",
+  description:
+    "Get in touch with Jeeko Agro Industries. Contact us for generators, power tillers, pumpsets, or dealer registration. Reach out via email, phone, WhatsApp or visit our facility in Rajkot, Gujarat, India.",
+  keywords: [
+    "contact Jeeko",
+    "Jeeko phone number",
+    "Jeeko email address",
+    "Jeeko factory Rajkot",
+    "agricultural dealership registration",
+    "farming equipment support",
+    "pumpset sales inquiry",
+  ],
+  openGraph: {
+    title: "Contact Jeeko Agro Industries | Sales, Support & Dealership",
+    description:
+      "Get in touch with our team for immediate product queries, dealer applications, or technical support. Available via call, email, or WhatsApp.",
+    url: "/contact",
+    type: "website",
+    siteName: SITE_NAME,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact Us | Jeeko Agro Industries",
+    description:
+      "Reach out to Jeeko team in Rajkot, Gujarat for sales support, generators, pumps, and weeders.",
+  },
+};
 
 export default function ContactPage() {
   return (

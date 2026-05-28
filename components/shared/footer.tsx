@@ -119,6 +119,12 @@ export default function Footer() {
               About Us
             </Link>
             <Link
+              href="/kishan-king"
+              className="text-xs sm:text-sm text-gray-700 hover:text-primary transition-colors duration-200"
+            >
+              Kishan King
+            </Link>
+            <Link
               href="/products"
               className="text-xs sm:text-sm text-gray-700 hover:text-primary transition-colors duration-200"
             >
