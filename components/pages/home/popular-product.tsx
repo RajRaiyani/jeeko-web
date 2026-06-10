@@ -29,6 +29,7 @@ interface ProductCategory {
 interface Product {
   id: string;
   category_id?: string;
+  brand?: "jeeko" | "kishan king";
   name: string;
   description?: string;
   tags?: string[];
@@ -102,7 +103,10 @@ function PopularProductSkeleton() {
 
 export default function PopularProduct() {
   const containerRef = useRef<HTMLElement>(null);
-  const { data: productsResponse, isLoading, error } = useProducts();
+  const { data: productsResponse, isLoading, error } = useProducts({
+    brand: "jeeko",
+    limit: 8,
+  });
 
   // Extract products from API response - handle both direct array and wrapped response
   let popularProducts: Product[] = [];

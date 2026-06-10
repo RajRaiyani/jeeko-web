@@ -2,6 +2,7 @@ import axiosInstance from "./httpServices";
 
 export async function listProducts(params?: {
   category_id?: string;
+  brand?: "jeeko" | "kishan king";
   search?: string;
   offset?: number;
   limit?: number;

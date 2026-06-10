@@ -17,6 +17,11 @@ import {
 } from "@/components/ui/sheet";
 import { useProducts } from "@/hooks/useProducts";
 import { useProductCategories } from "@/hooks/useProductCategories";
+import {
+  formatProductBrand,
+  PRODUCT_BRANDS,
+  type ProductBrand,
+} from "@/lib/product-brands";
 
 // Type definitions
 interface ProductImage {
@@ -40,6 +45,7 @@ interface ProductCategory {
 interface Product {
   id: string;
   category_id?: string;
+  brand?: "jeeko" | "kishan king";
   name: string;
   description?: string;
   tags?: string[];
@@ -166,30 +172,34 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
   );
 }
 
-// Category Filter Component (reusable for desktop and mobile)
-interface CategoryFilterProps {
+// Product filters (brand + category), reusable for desktop and mobile
+interface ProductFiltersProps {
   categories: ProductCategory[];
   categoriesLoading: boolean;
   selectedCategoryId?: string;
+  selectedBrand?: ProductBrand;
   hasActiveFilters: boolean;
   onCategoryChange: (categoryId: string | null) => void;
+  onBrandChange: (brand: ProductBrand | null) => void;
   onClearFilters: () => void;
   onClose?: () => void;
 }
 
-function CategoryFilter({
+function ProductFilters({
   categories,
   categoriesLoading,
   selectedCategoryId,
+  selectedBrand,
   hasActiveFilters,
   onCategoryChange,
+  onBrandChange,
   onClearFilters,
   onClose,
-}: CategoryFilterProps) {
+}: ProductFiltersProps) {
   return (
-    <div>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">Categories</h2>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Filters</h2>
         {hasActiveFilters && (
           <Button
             variant="ghost"
@@ -200,49 +210,88 @@ function CategoryFilter({
             }}
             className="text-xs"
           >
-            Clear
+            Clear all
           </Button>
         )}
       </div>
-      {categoriesLoading ? (
-        <div className="space-y-2">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-8 bg-slate-200 rounded animate-pulse" />
-          ))}
-        </div>
-      ) : (
+
+      <div>
+        <h3 className="text-sm font-medium text-slate-700 mb-3">Brand</h3>
         <div className="space-y-2">
           <button
             onClick={() => {
-              onCategoryChange(null);
+              onBrandChange(null);
               onClose?.();
             }}
             className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-              !selectedCategoryId
+              !selectedBrand
                 ? "bg-primary text-white font-medium"
                 : "bg-slate-50 hover:bg-slate-100 text-slate-700"
             }`}
           >
-            All Products
+            All Brands
           </button>
-          {categories.map((category) => (
+          {PRODUCT_BRANDS.map((brand) => (
             <button
-              key={category.id}
+              key={brand}
               onClick={() => {
-                onCategoryChange(category.id);
+                onBrandChange(brand);
                 onClose?.();
               }}
               className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                selectedCategoryId === category.id
+                selectedBrand === brand
                   ? "bg-primary text-white font-medium"
                   : "bg-slate-50 hover:bg-slate-100 text-slate-700"
               }`}
             >
-              {category.name}
+              {formatProductBrand(brand)}
             </button>
           ))}
         </div>
-      )}
+      </div>
+
+      <div>
+        <h3 className="text-sm font-medium text-slate-700 mb-3">Category</h3>
+        {categoriesLoading ? (
+          <div className="space-y-2">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="h-8 bg-slate-200 rounded animate-pulse" />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <button
+              onClick={() => {
+                onCategoryChange(null);
+                onClose?.();
+              }}
+              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                !selectedCategoryId
+                  ? "bg-primary text-white font-medium"
+                  : "bg-slate-50 hover:bg-slate-100 text-slate-700"
+              }`}
+            >
+              All Categories
+            </button>
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => {
+                  onCategoryChange(category.id);
+                  onClose?.();
+                }}
+                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                  selectedCategoryId === category.id
+                    ? "bg-primary text-white font-medium"
+                    : "bg-slate-50 hover:bg-slate-100 text-slate-700"
+                }`}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -255,16 +304,22 @@ function ProductsPageContent() {
   );
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
-  // Get category from URL params
+  // Get filters from URL params
   const categoryParam = searchParams.get("category");
   const selectedCategoryId =
     categoryParam && categoryParam !== "undefined" && categoryParam !== "null"
       ? categoryParam
       : undefined;
 
+  const brandParam = searchParams.get("brand");
+  const selectedBrand = PRODUCT_BRANDS.includes(brandParam as ProductBrand)
+    ? (brandParam as ProductBrand)
+    : undefined;
+
   // Build query params - only include defined values
   const queryParams: {
     category_id?: string;
+    brand?: ProductBrand;
     search?: string;
     limit: number;
   } = {
@@ -273,6 +328,10 @@ function ProductsPageContent() {
 
   if (selectedCategoryId) {
     queryParams.category_id = selectedCategoryId;
+  }
+
+  if (selectedBrand) {
+    queryParams.brand = selectedBrand;
   }
 
   if (searchTerm && searchTerm.trim()) {
@@ -321,15 +380,24 @@ function ProductsPageContent() {
     return [];
   }, [categoriesResponse]);
 
-  // Handle category filter
-  const handleCategoryChange = (categoryId: string | null) => {
+  const updateSearchParams = (updates: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString());
-    if (categoryId) {
-      params.set("category", categoryId);
-    } else {
-      params.delete("category");
-    }
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+    });
     router.push(`/products?${params.toString()}`);
+  };
+
+  const handleCategoryChange = (categoryId: string | null) => {
+    updateSearchParams({ category: categoryId });
+  };
+
+  const handleBrandChange = (brand: ProductBrand | null) => {
+    updateSearchParams({ brand });
   };
 
   // Handle search
@@ -350,7 +418,10 @@ function ProductsPageContent() {
     router.push("/products");
   };
 
-  const hasActiveFilters = !!(selectedCategoryId || searchTerm);
+  const hasActiveFilters = !!(selectedCategoryId || selectedBrand || searchTerm);
+  const activeFilterCount = [selectedCategoryId, selectedBrand, searchTerm].filter(
+    Boolean,
+  ).length;
 
   return (
     <section className="w-full min-h-screen px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
@@ -396,7 +467,7 @@ function ProductsPageContent() {
                 Filters
                 {hasActiveFilters && (
                   <span className="ml-2 px-2 py-0.5 bg-primary text-white text-xs rounded-full">
-                    {[selectedCategoryId, searchTerm].filter(Boolean).length}
+                    {activeFilterCount}
                   </span>
                 )}
               </Button>
@@ -406,12 +477,14 @@ function ProductsPageContent() {
                 <SheetTitle>Filter Products</SheetTitle>
               </SheetHeader>
               <div className="mt-6">
-                <CategoryFilter
+                <ProductFilters
                   categories={categories}
                   categoriesLoading={categoriesLoading}
                   selectedCategoryId={selectedCategoryId}
+                  selectedBrand={selectedBrand}
                   hasActiveFilters={hasActiveFilters}
                   onCategoryChange={handleCategoryChange}
+                  onBrandChange={handleBrandChange}
                   onClearFilters={clearFilters}
                   onClose={() => setMobileFilterOpen(false)}
                 />
@@ -422,15 +495,17 @@ function ProductsPageContent() {
 
         {/* Filters and Products Grid */}
         <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
-          {/* Desktop Sidebar - Category Filter */}
+          {/* Desktop Sidebar - Filters */}
           <aside className="hidden lg:block lg:w-64 shrink-0">
             <Card className="p-4 md:p-6 bg-white sticky top-24 lg:top-28">
-              <CategoryFilter
+              <ProductFilters
                 categories={categories}
                 categoriesLoading={categoriesLoading}
                 selectedCategoryId={selectedCategoryId}
+                selectedBrand={selectedBrand}
                 hasActiveFilters={hasActiveFilters}
                 onCategoryChange={handleCategoryChange}
+                onBrandChange={handleBrandChange}
                 onClearFilters={clearFilters}
               />
             </Card>
@@ -444,6 +519,18 @@ function ProductsPageContent() {
                 <span className="text-xs sm:text-sm text-slate-600 w-full sm:w-auto">
                   Active filters:
                 </span>
+                {selectedBrand && (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 bg-primary/10 text-primary rounded-full text-xs sm:text-sm">
+                    {formatProductBrand(selectedBrand)}
+                    <button
+                      onClick={() => handleBrandChange(null)}
+                      className="hover:text-primary/80 ml-0.5"
+                      aria-label="Remove brand filter"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                )}
                 {selectedCategoryId && (
                   <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 bg-primary/10 text-primary rounded-full text-xs sm:text-sm">
                     {categories.find((c) => c.id === selectedCategoryId)

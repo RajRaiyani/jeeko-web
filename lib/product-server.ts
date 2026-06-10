@@ -1,3 +1,5 @@
+import type { ProductBrand } from "@/lib/product-brands";
+
 const BASE_URL = process.env.NEXT_PUBLIC_SERVER_ENDPOINT;
 
 export interface ProductImage {
@@ -17,6 +19,7 @@ export interface ProductCategory {
 export interface Product {
   id: string;
   category_id?: string;
+  brand?: ProductBrand;
   name: string;
   description?: string;
   tags?: string[];

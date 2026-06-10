@@ -3,6 +3,7 @@ import { listProducts, getProduct } from "@/services/api/product";
 
 export function useProducts(params?: {
   category_id?: string;
+  brand?: "jeeko" | "kishan king";
   search?: string;
   offset?: number;
   limit?: number;

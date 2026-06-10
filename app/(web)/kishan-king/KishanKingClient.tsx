@@ -31,6 +31,7 @@ interface ProductCategory {
 interface Product {
   id: string;
   category_id?: string;
+  brand?: "jeeko" | "kishan king";
   name: string;
   description?: string;
   tags?: string[];
@@ -49,7 +50,10 @@ export default function KishanKingClient() {
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<"all" | "weeder" | "pump">("all");
 
   // Fetch products and categories from server
-  const { data: productsResponse, isLoading: productsLoading, error: productsError } = useProducts({ limit: 50 });
+  const { data: productsResponse, isLoading: productsLoading, error: productsError } = useProducts({
+    brand: "kishan king",
+    limit: 50,
+  });
   const { data: categoriesResponse } = useProductCategories();
 
   // Extract products
@@ -62,22 +66,7 @@ export default function KishanKingClient() {
     return [];
   }, [productsResponse]);
 
-  // Filter Kishan King specific products dynamically
-  const kishanKingProducts = useMemo(() => {
-    return products.filter((product) => {
-      const categoryName = product.category?.name?.toLowerCase() || "";
-      const productName = product.name?.toLowerCase() || "";
-      
-      // Matches categories starting with Kishanking/Kishan King or containing it, or name containing kishanking
-      return (
-        categoryName.includes("kishanking") ||
-        categoryName.includes("kishan") ||
-        productName.includes("kishanking") ||
-        product.category_id === "00d91031-84da-4ad5-86b4-649c7c2348c1" || // Kishanking Power Weeder
-        product.category_id === "10f39a32-fc61-4ce4-b4cd-a855fbff7df6"    // Kishanking Water Pump Set
-      );
-    });
-  }, [products]);
+  const kishanKingProducts = products;
 
   // Apply search and sub-category filtering
   const filteredProducts = useMemo(() => {

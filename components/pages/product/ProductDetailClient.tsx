@@ -29,6 +29,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCreateInquiry, type CreateInquiryData } from "@/hooks/useInquiry";
+import { formatProductBrand } from "@/lib/product-brands";
 import type { Product, ProductImage } from "@/lib/product-server";
 
 const inquiryFormSchema = z.object({
@@ -221,7 +222,12 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
 
           {/* Product Information */}
           <div className="space-y-6">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              {product.brand && (
+                <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">
+                  {formatProductBrand(product.brand)}
+                </span>
+              )}
               <Link
                 href={`/products?category=${product.category_id}`}
                 className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/20 transition-colors"
