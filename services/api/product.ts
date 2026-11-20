@@ -1,8 +1,9 @@
 import axiosInstance from "./httpServices";
+import type { ProductBrand } from "@/lib/product-brands";
 
 export async function listProducts(params?: {
   category_id?: string;
-  brand?: "jeeko" | "kishan king";
+  brand?: ProductBrand;
   search?: string;
   offset?: number;
   limit?: number;

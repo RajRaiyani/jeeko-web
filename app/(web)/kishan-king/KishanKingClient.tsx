@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useProducts } from "@/hooks/useProducts";
 import { useProductCategories } from "@/hooks/useProductCategories";
+import type { ProductBrand } from "@/lib/product-brands";
 
 interface ProductImage {
   image_id?: string;
@@ -31,7 +32,7 @@ interface ProductCategory {
 interface Product {
   id: string;
   category_id?: string;
-  brand?: "jeeko" | "kishan king";
+  brand?: ProductBrand;
   name: string;
   description?: string;
   tags?: string[];

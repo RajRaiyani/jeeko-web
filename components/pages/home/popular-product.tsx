@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
+import type { ProductBrand } from "@/lib/product-brands";
 
 // Type definitions
 interface ProductImage {
@@ -29,7 +30,7 @@ interface ProductCategory {
 interface Product {
   id: string;
   category_id?: string;
-  brand?: "jeeko" | "kishan king";
+  brand?: ProductBrand;
   name: string;
   description?: string;
   tags?: string[];

@@ -45,7 +45,7 @@ interface ProductCategory {
 interface Product {
   id: string;
   category_id?: string;
-  brand?: "jeeko" | "kishan king";
+  brand?: ProductBrand;
   name: string;
   description?: string;
   tags?: string[];
