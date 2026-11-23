@@ -1,9 +1,6 @@
 "use client";
 
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 import Image from "next/image";
-import "./style/hero.css";
 import {
   Carousel,
   CarouselContent,
@@ -12,172 +9,80 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import { Users } from "lucide-react";
-import { useRef } from "react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { TextPlugin } from "gsap/TextPlugin";
-
-gsap.registerPlugin(ScrollTrigger, TextPlugin);
-
-interface Banner {
-  image: string;
-  image_md: string;
-}
-
-const banner: Banner[] = [
+const banners = [
   {
-    image: "/images/banners/banner-1-sm.webp",
-    image_md: "/images/banners/4.svg",
+    mobile: "/images/banners/banner-1-sm.webp",
+    desktop: "/images/banners/4.svg",
   },
   {
-    image: "/images/banners/banner-2-sm.webp",
-    image_md: "/images/banners/5.svg",
+    mobile: "/images/banners/banner-2-sm.webp",
+    desktop: "/images/banners/5.svg",
   },
   {
-    image: "/images/banners/banner-3-sm.webp",
-    image_md: "/images/banners/6.svg",
+    mobile: "/images/banners/banner-3-sm.webp",
+    desktop: "/images/banners/6.svg",
   },
 ];
 
+const certifications = [
+  { src: "/images/pages/home/isi-logo.png", alt: "ISI" },
+  { src: "/images/pages/home/iso-logo.png", alt: "ISO" },
+  { src: "/images/pages/home/fmtti-logo.png", alt: "FMTTI" },
+];
+
 export default function Hero() {
-  const containerRef = useRef<HTMLElement>(null);
-  const customerCountRef = useRef<HTMLHeadingElement>(null);
-  const yearsRef = useRef<HTMLHeadingElement>(null);
-
-  useGSAP(
-    () => {
-      gsap.from(
-        ".info-container, .jeeko-logo, .kk-logo, .category-container, .approvals, .customer-count, .years-of-experience",
-        {
-          opacity: 0,
-          y: 100,
-          duration: 0.7,
-          stagger: 0.2,
-        }
-      );
-
-      // Counter animation for customer count
-      gsap.to(customerCountRef.current, {
-        duration: 2,
-        delay: 0.5,
-        textContent: "100+",
-        snap: { textContent: 1 },
-        ease: "power1.inOut",
-        onUpdate: function () {
-          const value = Math.ceil(parseFloat(this.targets()[0].textContent));
-          this.targets()[0].textContent = value + "+";
-        },
-      });
-
-      // Counter animation for years of experience
-      gsap.to(yearsRef.current, {
-        duration: 2,
-        delay: 0.5,
-        textContent: "3+",
-        snap: { textContent: 1 },
-        ease: "power1.inOut",
-        onUpdate: function () {
-          const value = Math.ceil(parseFloat(this.targets()[0].textContent));
-          this.targets()[0].textContent = value + "+";
-        },
-      });
-    },
-    { scope: containerRef }
-  );
-
   return (
-    <section ref={containerRef} className="w-full  px-4 sm:px-6 lg:px-8 ">
-      {/* Hero Banner Section - Same width structure as About page */}
-      <div className="w-full pb-4 sm:pb-8">
-        <div className="max-w-7xl mx-auto rounded-2xl bg-white overflow-hidden shadow-lg">
-          <Carousel
-            className="w-full h-full"
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-          >
-            <CarouselContent>
-              {banner.map((category, index) => (
-                <CarouselItem
-                  key={index}
-                  className="flex rounded-xl flex-col w-full h-full justify-between items-center"
-                >
-                  <div className="bg-white rounded-xl w-full h-full">
-                    {/* Mobile Image */}
-                    <Image
-                      src={category.image}
-                      alt={category.image}
-                      width={1980}
-                      height={709}
-                      className="w-full rounded-xl object-contain block sm:max-h-[85vh] sm:object-cover sm:object-bottom md:hidden"
-                      priority
-                    />
-                    {/* Desktop Image */}
-                    <Image
-                      src={category.image_md}
-                      alt={category.image_md}
-                      width={1980}
-                      height={709}
-                      className="w-full rounded-xl object-contain hidden md:block"
-                      priority={index === 0}
-                      quality={100}
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="absolute h-12 w-12 left-4 border-red-600 text-red-600 hover:bg-red-600/20 hover:text-red-600" />
-            <CarouselNext className="absolute h-12 w-12 right-4 border-red-600 text-red-600 hover:bg-red-600/20 hover:text-red-600" />
-          </Carousel>
-        </div>
+    <section className="w-full px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl overflow-hidden rounded-2xl bg-white shadow-sm">
+        <Carousel opts={{ loop: true }} className="w-full">
+          <CarouselContent>
+            {banners.map((banner, index) => (
+              <CarouselItem key={banner.desktop}>
+                <Image
+                  src={banner.mobile}
+                  alt={`Jeeko banner ${index + 1}`}
+                  width={1980}
+                  height={709}
+                  priority={index === 0}
+                  className="block w-full object-contain md:hidden"
+                />
+                <Image
+                  src={banner.desktop}
+                  alt={`Jeeko banner ${index + 1}`}
+                  width={1980}
+                  height={709}
+                  priority={index === 0}
+                  quality={100}
+                  className="hidden w-full object-contain md:block"
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-3 border-primary text-primary hover:bg-primary/10" />
+          <CarouselNext className="right-3 border-primary text-primary hover:bg-primary/10" />
+        </Carousel>
       </div>
 
-      {/* Stats Section - Fixed to match Hero Banner padding exactly */}
-      <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 my-4">
-        <div className="flex col-span-2 py-7 items-center justify-around bg-white rounded-xl">
-          <Image
-            src="/images/pages/home/isi-logo.png"
-            alt="ISI certification"
-            width={200}
-            height={200}
-            className="size-20 object-contain"
-          />
-          <Image
-            src="/images/pages/home/iso-logo.png"
-            alt="ISO certification"
-            width={200}
-            height={200}
-            className="size-20 object-contain"
-          />
-          <Image
-            src="/images/pages/home/fmtti-logo.png"
-            alt="FMTTI certification"
-            width={200}
-            height={200}
-            className="size-20 object-contain"
-          />
+      <div className="mx-auto mt-4 grid max-w-7xl grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+        <div className="col-span-2 flex items-center justify-around rounded-xl bg-white px-4 py-6">
+          {certifications.map((item) => (
+            <Image
+              key={item.alt}
+              src={item.src}
+              alt={item.alt}
+              width={80}
+              height={80}
+              className="size-16 object-contain sm:size-20"
+            />
+          ))}
         </div>
-        <div className="col-span-1 flex flex-col py-7 gap-5 items-center justify-center bg-white rounded-xl customer-count">
-          <h2
-            ref={customerCountRef}
-            className="text-primary font-bold text-4xl"
-          >
-            0+
-          </h2>
-          <div className="font-bold flex items-center gap-2">
-            <Users className="size-5" />
-            <p className="text-sm md:text-base">Happy Customers</p>
-          </div>
+        <div className="flex flex-col items-center justify-center rounded-xl bg-white py-6">
+          <p className="text-3xl font-bold text-primary sm:text-4xl">100+</p>
+          <p className="mt-2 text-sm font-medium">Happy customers</p>
         </div>
-        <div className="col-span-1 flex flex-col py-7 gap-5 items-center justify-center bg-white rounded-xl years-of-experience">
-          <h2 ref={yearsRef} className="text-primary font-bold text-4xl">
-            0+
-          </h2>
-          <div className="font-bold flex items-center gap-2">
-            <p className="text-sm md:text-base">Years of Experience</p>
-          </div>
+        <div className="flex flex-col items-center justify-center rounded-xl bg-white py-6">
+          <p className="text-3xl font-bold text-primary sm:text-4xl">3+</p>
+          <p className="mt-2 text-sm font-medium">Years of experience</p>
         </div>
       </div>
     </section>

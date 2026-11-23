@@ -1,37 +1,8 @@
-import type { ProductBrand } from "@/lib/product-brands";
+import type { Product } from "@/lib/product";
+
+export type { Product, ProductImage, ProductCategory } from "@/lib/product";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SERVER_ENDPOINT;
-
-export interface ProductImage {
-  image_id?: string;
-  is_primary?: boolean;
-  image?: { id: string; key: string; url: string };
-  url?: string;
-  alt?: string;
-}
-
-export interface ProductCategory {
-  id: string;
-  name: string;
-  description?: string;
-}
-
-export interface Product {
-  id: string;
-  category_id?: string;
-  brand?: ProductBrand;
-  name: string;
-  description?: string;
-  tags?: string[];
-  metadata?: Record<string, unknown>;
-  sale_price?: number;
-  sale_price_in_rupees?: number;
-  created_at?: string;
-  updated_at?: string;
-  points?: string[];
-  category?: ProductCategory;
-  images?: ProductImage[];
-}
 
 type ApiResponse = { data?: Product } | Product;
 

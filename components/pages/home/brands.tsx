@@ -1,115 +1,79 @@
-"use client";
-
 import Image from "next/image";
-import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useRef } from "react";
+import { SectionHeader } from "@/components/shared/SectionHeader";
+
+const brands = [
+  {
+    name: "Jeeko",
+    logo: "/logos/primary.svg",
+    brochure: "/images/pages/home/jeeko-brochure.png",
+    href: "/products?brand=jeeko",
+    description:
+      "Generators and power equipment built for homes, farms, and businesses.",
+  },
+  {
+    name: "Kishan King",
+    logo: "/images/pages/home/kk-logo.png",
+    brochure: "/images/pages/home/kk-brochure.png",
+    href: "/kishan-king",
+    description:
+      "Agricultural tools designed to help Indian farmers work more efficiently.",
+  },
+];
 
 export default function Brands() {
-  const containerRef = useRef<HTMLElement>(null);
-
-  // All GSAP animations removed
-
   return (
-    <section
-      ref={containerRef}
-      className="w-full mx-auto my-10  px-4 sm:px-6 lg:px-8"
-    >
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-4xl text-center font-bold">Our Brands</h2>
-        <div className="w-32 h-1 bg-primary mx-auto my-2"></div>
+    <section className="w-full px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <SectionHeader title="Our brands" />
 
-        <div className="flex flex-col lg:flex-row gap-6 my-7">
-          {/* JEEKO Brand Card */}
-          <div className="w-full bg-white rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-lg transition-shadow duration-300">
-            <div className="w-full flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <Image
-                src="/logos/primary.svg"
-                className="object-contain flex-shrink-0"
-                alt="JEEKO"
-                width={80}
-                height={80}
-              />
-              <div>
-                <h2 className="text-primary font-bold text-lg sm:text-xl">
-                  JEEKO
-                </h2>
-                <p className="text-muted-foreground text-sm sm:text-base">
-                  Our main brand specializing in high-quality generators
-                  designed for reliability and performance in various settings,
-                  from homes to farms.
-                </p>
+        <div className="mt-8 grid gap-5 lg:grid-cols-2">
+          {brands.map((brand) => (
+            <div
+              key={brand.name}
+              className="rounded-xl bg-white p-5 shadow-sm sm:p-6"
+            >
+              <div className="flex items-start gap-4">
+                <Image
+                  src={brand.logo}
+                  alt={brand.name}
+                  width={72}
+                  height={72}
+                  className="size-16 object-contain"
+                />
+                <div>
+                  <h3 className="text-lg font-bold text-primary">{brand.name}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {brand.description}
+                  </p>
+                </div>
               </div>
-            </div>
-            <Separator className="my-4 sm:my-6" />
-            <div className="w-full flex flex-col sm:flex-row gap-4 sm:gap-5">
-              <Image
-                src="/images/pages/home/jeeko-brochure.png"
-                className="object-contain shadow-lg rounded border h-fit w-full sm:w-1/2 md:w-48"
-                alt="JEEKO Brochure"
-                width={500}
-                height={500}
-              />
-              <div className="space-y-2 flex-1">
-                <h3 className="text-base sm:text-lg md:text-xl font-bold">
-                  Get manuals and support for your JEEKO machine
-                </h3>
-                <ul className="list-disc list-inside text-sm sm:text-base space-y-1">
-                  <li>Products</li>
-                  <li>Pricing</li>
-                  <li>Service & Support</li>
-                </ul>
-                <Button className="w-full sm:w-auto hover:scale-105 transition-transform duration-200">
-                  Download Brochure
-                </Button>
-              </div>
-            </div>
-          </div>
 
-          {/* Kishan King Brand Card */}
-          <div className="w-full bg-white rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-lg transition-shadow duration-300">
-            <div className="w-full flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <Image
-                src="/images/pages/home/kk-logo.png"
-                className="object-contain flex-shrink-0"
-                alt="Kishan King"
-                width={80}
-                height={80}
-              />
-              <div>
-                <h2 className="text-primary font-bold text-lg sm:text-xl">
-                  Kishan King
-                </h2>
-                <p className="text-muted-foreground text-sm sm:text-base">
-                  Our sub-brand dedicated to agricultural equipment and farming
-                  tools designed to enhance productivity for Indian farmers.
-                </p>
+              <div className="mt-5 flex flex-col gap-4 border-t pt-5 sm:flex-row">
+                <Image
+                  src={brand.brochure}
+                  alt={`${brand.name} brochure`}
+                  width={160}
+                  height={220}
+                  className="h-auto w-full rounded border object-contain sm:w-40"
+                />
+                <div className="flex flex-1 flex-col justify-between gap-3">
+                  <div>
+                    <p className="font-semibold">Brochures & support</p>
+                    <ul className="mt-2 list-inside list-disc text-sm text-muted-foreground">
+                      <li>Products</li>
+                      <li>Pricing</li>
+                      <li>Service & support</li>
+                    </ul>
+                  </div>
+                  <Button asChild className="w-full sm:w-fit">
+                    <Link href={brand.href}>Explore {brand.name}</Link>
+                  </Button>
+                </div>
               </div>
             </div>
-            <Separator className="my-4 sm:my-6" />
-            <div className="w-full flex flex-col sm:flex-row gap-4 sm:gap-5">
-              <Image
-                src="/images/pages/home/kk-brochure.png"
-                className="object-contain shadow-lg rounded border h-fit w-full sm:w-1/2 md:w-48"
-                alt="Kishan King Brochure"
-                width={500}
-                height={500}
-              />
-              <div className="space-y-2 flex-1">
-                <h3 className="text-base sm:text-lg md:text-xl font-bold">
-                  Get manuals and support for your Kishan King machine
-                </h3>
-                <ul className="list-disc list-inside text-sm sm:text-base space-y-1">
-                  <li>Products</li>
-                  <li>Pricing</li>
-                  <li>Service & Support</li>
-                </ul>
-                <Button className="w-full sm:w-auto hover:scale-105 transition-transform duration-200">
-                  Download Brochure
-                </Button>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

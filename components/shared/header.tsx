@@ -1,362 +1,136 @@
-import React from "react";
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
-
+import { AlignJustify, Instagram, X, Youtube } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AlignJustify, X, Instagram, Youtube } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useProductCategories } from "@/hooks/useProductCategories";
+import { asList, type ProductCategory } from "@/lib/product";
+import { NAV_LINKS, SITE } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-
-interface ListItemProps {
-  className?: string;
-  title: string;
-  href: string;
-}
-
-// List item component for category links using mobile-style
-const ListItem = React.forwardRef<HTMLAnchorElement, ListItemProps>(
-  ({ className, title, href, ...props }, ref) => {
-    return (
-      <li>
-        <NavigationMenuLink asChild>
-          <Link
-            ref={ref}
-            href={href}
-            className={cn(
-              "block py-2 px-3 rounded-lg hover:bg-gray-50 text-sm text-gray-600 transition-all duration-200 transform hover:translate-x-1 select-none no-underline outline-none",
-              className
-            )}
-            {...props}
-          >
-            {title}
-          </Link>
-        </NavigationMenuLink>
-      </li>
-    );
-  }
-);
-ListItem.displayName = "ListItem";
-
-interface ProductCategory {
-  id: string;
-  name: string;
-}
-
-interface HeaderProps {
-  className?: string;
-}
-
-export default function Header({ className }: HeaderProps) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Fetch product categories for the dropdown
-  const { data: categoriesResponse, isLoading: categoriesLoading } =
-    useProductCategories();
-  const categories = (categoriesResponse || []) as ProductCategory[];
+export default function Header() {
+  const [open, setOpen] = useState(false);
+  const { data } = useProductCategories();
+  const categories = asList<ProductCategory>(data);
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 py-4 w-full px-4 sm:px-6 lg:px-8 z-50",
-        className
-      )}
-    >
-      {/* Container with max-w-7xl for content width constraint - exactly same as hero */}
-      <div className="max-w-7xl mx-auto rounded-xl bg-white flex justify-between items-center min-h-16 px-4 sm:px-6">
-        <Link href="/">
-          <Image src="/logos/primary.svg" alt="logo" width={100} height={100} />
+    <header className="sticky top-0 z-50 px-4 py-3 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-4 rounded-xl bg-white px-4 shadow-sm sm:px-6">
+        <Link href="/" className="shrink-0" onClick={() => setOpen(false)}>
+          <Image
+            src="/logos/primary.svg"
+            alt={SITE.name}
+            width={100}
+            height={40}
+            priority
+          />
         </Link>
 
-        {/* Desktop Navigation - With Products Dropdown */}
-        <div className="hidden lg:flex items-center gap-1">
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuLink
-                  className={cn(navigationMenuTriggerStyle(), "nav-item")}
-                  asChild
-                >
-                  <Link href="/">Home</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink
-                  className={cn(navigationMenuTriggerStyle(), "nav-item")}
-                  asChild
-                >
-                  <Link href="/about">About us</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem className="flex items-center">
-                <Link
-                  href="/kishan-king"
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs xl:text-sm font-bold bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white hover:from-[#2D6A4F] hover:to-[#40916C] shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5 ml-2 mr-1 cursor-pointer select-none"
-                >
-                  <span className="h-1.5 w-1.5 rounded-full bg-yellow-400 animate-pulse shrink-0" />
-                  Kishan King
-                </Link>
-              </NavigationMenuItem>
-
-              {/* Products with Category Dropdown */}
-              <NavigationMenuItem className="nav-item">
-                <NavigationMenuTrigger className="nav-item">
-                  <Link href="/products" className="no-underline">
-                    Products
-                  </Link>
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <div className="w-64 bg-white rounded-md border border-gray-100 p-4 max-h-[70vh] overflow-y-auto">
-                    {/* Categories Section */}
-                    {!categoriesLoading && categories.length > 0 && (
-                      <div className="space-y-1">
-                        <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wide px-3 py-1 mb-2">
-                          Categories
-                        </h4>
-                        <ul className="space-y-1">
-                          {categories.map((category) => (
-                            <ListItem
-                              key={category.id}
-                              title={category.name}
-                              href={`/products?category=${category.id}`}
-                              className="text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium"
-                            />
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {/* Loading State */}
-                    {categoriesLoading && (
-                      <div className="space-y-1">
-                        <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wide px-3 py-1 mb-2">
-                          Loading Categories...
-                        </h4>
-                        <div className="space-y-2">
-                          {[1, 2, 3, 4].map((i) => (
-                            <div
-                              key={i}
-                              className="h-8 bg-gray-100 rounded-lg animate-pulse mx-3"
-                            ></div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* No categories fallback */}
-                    {!categoriesLoading && categories.length === 0 && (
-                      <div className="text-center py-6">
-                        <p className="text-sm text-gray-500">
-                          No categories available
-                        </p>
-                        <p className="text-xs text-gray-400 mt-1">
-                          Please check back later
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-
-              <NavigationMenuItem className="nav-item">
-                <NavigationMenuLink
-                  className={cn(navigationMenuTriggerStyle())}
-                  asChild
-                >
-                  <Link href="/brochures">Brochures</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-        </div>
-
-        {/* Social Media Icons & Contact Button - Desktop */}
-        <div className="hidden xl:flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              className="rounded-full text-primary w-9 h-9 border-primary hover:border-primary hover:bg-primary/10 hover:text-primary transition-all duration-200"
-              aria-label="Instagram"
-              onClick={() =>
-                window.open("https://www.instagram.com/jeekoagritech", "_blank")
-              }
+        <nav className="hidden items-center gap-1 lg:flex">
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "rounded-md px-3 py-2 text-sm font-medium text-foreground/80 transition-colors hover:bg-muted hover:text-foreground",
+                link.href === "/kishan-king" &&
+                  "bg-[#1B4332] text-white hover:bg-[#2D6A4F] hover:text-white"
+              )}
             >
-              <Instagram className="w-5 h-5 text-primary hover:text-primary" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="rounded-full text-primary w-9 h-9 border-primary hover:border-primary hover:bg-primary/10 hover:text-primary transition-all duration-200"
-              aria-label="YouTube"
-              onClick={() =>
-                window.open("https://www.youtube.com/@jeekoagritech", "_blank")
-              }
-            >
-              <Youtube className="w-5 h-5 text-primary hover:text-primary" />
-            </Button>
-          </div>
-          <Link href="/contact">
-            <Button size="lg" className="font-semibold">
-              Contact Us
-            </Button>
-          </Link>
-        </div>
+              {link.label}
+            </Link>
+          ))}
+        </nav>
 
-        {/* Mobile Menu - Box Style Dropdown with Category Support */}
-        <div className="lg:hidden relative">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-            className="bg-primary text-white hover:bg-primary/90 border-primary transition-all duration-200"
+        <div className="hidden items-center gap-2 xl:flex">
+          <a
+            href={SITE.social.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="rounded-full border p-2 text-primary transition-colors hover:bg-primary/5"
           >
-            <div className="relative">
-              <AlignJustify
-                className={`h-5 w-5 transition-all duration-300 ${
-                  mobileMenuOpen
-                    ? "opacity-0 rotate-90"
-                    : "opacity-100 rotate-0"
-                }`}
-              />
-              <X
-                className={`h-5 w-5 absolute inset-0 transition-all duration-300 ${
-                  mobileMenuOpen
-                    ? "opacity-100 rotate-0"
-                    : "opacity-0 -rotate-90"
-                }`}
-              />
-            </div>
+            <Instagram className="h-4 w-4" />
+          </a>
+          <a
+            href={SITE.social.youtube}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="YouTube"
+            className="rounded-full border p-2 text-primary transition-colors hover:bg-primary/5"
+          >
+            <Youtube className="h-4 w-4" />
+          </a>
+          <Button asChild>
+            <Link href="/contact">Contact</Link>
           </Button>
+        </div>
 
-          {/* Mobile Dropdown Box with Smooth Animation */}
-          <div
-            className={`absolute top-12 right-0 w-72 bg-white rounded-lg shadow-lg border border-gray-200 z-50 transition-all duration-300 ease-out origin-top-right ${
-              mobileMenuOpen
-                ? "opacity-100 scale-100 translate-y-0"
-                : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
-            }`}
-          >
-            <nav className="flex flex-col p-4 max-h-[80vh] overflow-y-auto">
-              <Link
-                href="/"
-                className="py-3 px-3 rounded-lg hover:bg-gray-100 text-base font-medium transition-all duration-200 transform hover:translate-x-1"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Home
-              </Link>
-              <Link
-                href="/about"
-                className="py-3 px-3 rounded-lg hover:bg-gray-100 text-base font-medium transition-all duration-200 transform hover:translate-x-1"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                About Us
-              </Link>
-              <Link
-                href="/kishan-king"
-                className="my-1.5 mx-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] text-white text-base font-bold flex items-center gap-2 transition-all duration-200 shadow hover:shadow-md hover:translate-x-0.5"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <span className="h-2 w-2 rounded-full bg-yellow-400 animate-pulse shrink-0" />
-                Kishan King
-              </Link>
+        <Button
+          variant="default"
+          size="icon"
+          className="lg:hidden"
+          aria-label={open ? "Close menu" : "Open menu"}
+          onClick={() => setOpen((v) => !v)}
+        >
+          {open ? <X className="h-5 w-5" /> : <AlignJustify className="h-5 w-5" />}
+        </Button>
+      </div>
 
-              {/* Products Section with Categories - Mobile View */}
-              <div className="py-2">
+      {open && (
+        <>
+          <button
+            type="button"
+            aria-label="Close menu"
+            className="fixed inset-0 z-40 bg-black/30 lg:hidden"
+            onClick={() => setOpen(false)}
+          />
+          <div className="absolute right-4 left-4 z-50 mt-2 max-h-[80vh] overflow-y-auto rounded-xl border bg-white p-3 shadow-lg sm:right-6 lg:hidden">
+            <nav className="flex flex-col gap-1">
+              {NAV_LINKS.map((link) => (
                 <Link
-                  href="/products"
-                  className="py-3 px-3 rounded-lg hover:bg-gray-100 text-base font-medium transition-all duration-200 transform hover:translate-x-1 block"
-                  onClick={() => setMobileMenuOpen(false)}
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    "rounded-lg px-3 py-2.5 text-sm font-medium hover:bg-muted",
+                    link.href === "/kishan-king" &&
+                      "bg-[#1B4332] text-white hover:bg-[#2D6A4F]"
+                  )}
                 >
-                  All Products
+                  {link.label}
                 </Link>
+              ))}
 
-                {/* Categories in Mobile */}
-                {!categoriesLoading && categories.length > 0 && (
-                  <div className="ml-4 mt-2 space-y-1">
-                    {categories.map((category) => (
-                      <Link
-                        key={category.id}
-                        href={`/products?category=${category.id}`}
-                        className="block py-2 px-3 rounded-lg hover:bg-gray-50 text-sm text-gray-600 transition-all duration-200 transform hover:translate-x-1"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        {category.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
+              {categories.length > 0 && (
+                <div className="mt-2 border-t pt-2">
+                  <p className="px-3 pb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    Categories
+                  </p>
+                  {categories.map((category) => (
+                    <Link
+                      key={category.id}
+                      href={`/products?category=${category.id}`}
+                      onClick={() => setOpen(false)}
+                      className="block rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                    >
+                      {category.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
 
-              <Link
-                href="/brochures"
-                className="py-3 px-3 rounded-lg hover:bg-gray-100 text-base font-medium transition-all duration-200 transform hover:translate-x-1"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Brochures
-              </Link>
-
-              {/* Divider with animation */}
-              <div className="border-t border-gray-200 my-3 opacity-30"></div>
-
-              {/* Social Media Icons - Mobile */}
-              <div className="flex items-center justify-center gap-3 mb-3">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="rounded-full w-10 h-10 border-slate-300 hover:border-primary hover:bg-primary/10 hover:text-primary transition-all duration-200"
-                  aria-label="Instagram"
-                  onClick={() => {
-                    window.open(
-                      "https://www.instagram.com/jeekoagritech",
-                      "_blank"
-                    );
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  <Instagram className="w-5 h-5 text-slate-700 hover:text-primary" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="rounded-full w-10 h-10 border-slate-300 hover:border-primary hover:bg-primary/10 hover:text-primary transition-all duration-200"
-                  aria-label="YouTube"
-                  onClick={() => {
-                    window.open(
-                      "https://www.youtube.com/@jeekoagritech",
-                      "_blank"
-                    );
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  <Youtube className="w-5 h-5 text-slate-700 hover:text-primary" />
-                </Button>
-              </div>
-
-              {/* Contact Button with hover effect */}
-              <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
-                <Button
-                  size="sm"
-                  className="w-full font-semibold transition-all duration-200 hover:scale-105"
-                >
+              <Button asChild className="mt-3 w-full">
+                <Link href="/contact" onClick={() => setOpen(false)}>
                   Contact Us
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </nav>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </header>
   );
 }

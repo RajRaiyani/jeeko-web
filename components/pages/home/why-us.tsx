@@ -1,81 +1,61 @@
-"use client";
-
 import Image from "next/image";
-import { ShieldCheck, Fuel, Headset, ScrollText } from "lucide-react";
-import { ReactNode } from "react";
+import { Fuel, Headset, ScrollText, ShieldCheck } from "lucide-react";
+import { SectionHeader } from "@/components/shared/SectionHeader";
 
-interface Point {
-  icon: ReactNode;
-  title: string;
-  description: string;
-}
-
-const points: Point[] = [
+const points = [
   {
     icon: (
       <Image
         src="/icons/india-icon.svg"
-        className="size-8 sm:size-10"
-        alt="Why Us"
-        width={50}
-        height={50}
+        alt=""
+        width={32}
+        height={32}
+        className="size-8"
       />
     ),
     title: "Made in India",
     description:
-      "Proudly manufactured in India, supporting local industry and ensuring products are designed for Indian conditions.",
+      "Manufactured for Indian conditions, supporting local industry.",
   },
   {
-    icon: <ShieldCheck className="size-6 sm:size-7" />,
-    title: "Durable & Reliable",
-    description:
-      "Built to last with high-quality materials and rigorous testing to ensure reliability in demanding conditions.",
+    icon: <ShieldCheck className="size-7" />,
+    title: "Durable & reliable",
+    description: "Built with quality materials and rigorous testing.",
   },
   {
-    icon: <Fuel className="size-6 sm:size-7" />,
-    title: "Fuel Efficient",
-    description:
-      "Designed with optimal fuel efficiency to reduce operating costs and environmental impact.",
+    icon: <Fuel className="size-7" />,
+    title: "Fuel efficient",
+    description: "Designed to lower operating costs day after day.",
   },
   {
-    icon: <ScrollText className="size-6 sm:size-7" />,
-    title: "Easy to Operate",
-    description:
-      "User-friendly design with simple controls and clear instructions for hassle-free operation.",
+    icon: <ScrollText className="size-7" />,
+    title: "Easy to operate",
+    description: "Simple controls and clear instructions for every user.",
   },
   {
-    icon: <Headset className="size-6 sm:size-7" />,
-    title: "Customer Support",
-    description:
-      "Comprehensive support services to ensure your satisfaction and peace of mind.",
+    icon: <Headset className="size-7" />,
+    title: "Customer support",
+    description: "Help when you need it — before and after purchase.",
   },
 ];
 
 export default function WhyUs() {
   return (
-    <section className="w-full mx-auto my-6 sm:my-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-center font-bold">
-          Why Choose <span className="text-primary">JEEKO</span>?
-        </h2>
-        <div className="w-16 sm:w-24 md:w-32 h-1 bg-primary mx-auto my-2"></div>
+    <section className="w-full px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <SectionHeader title="Why choose Jeeko?" />
 
-        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 my-6 sm:my-8">
-          {/* Points Section */}
-          <div className="space-y-2 sm:space-y-3 md:space-y-4 w-full lg:w-1/2">
-            {points.map((point, index) => (
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          <div className="space-y-3">
+            {points.map((point) => (
               <div
-                key={index}
-                className="flex gap-2 sm:gap-3 md:gap-4 items-start p-2 sm:p-3 md:p-4 rounded-lg sm:rounded-xl bg-white point-card shadow-sm hover:shadow-md transition-shadow duration-300"
+                key={point.title}
+                className="flex gap-3 rounded-xl bg-white p-4 shadow-sm"
               >
-                <div className="text-primary flex-shrink-0 mt-0.5 sm:mt-1 md:mt-0">
-                  {point.icon}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-xs sm:text-sm md:text-base lg:text-lg leading-tight">
-                    {point.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm md:text-base text-muted-foreground mt-0.5 sm:mt-1 leading-relaxed">
+                <div className="shrink-0 text-primary">{point.icon}</div>
+                <div>
+                  <h3 className="font-semibold">{point.title}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
                     {point.description}
                   </p>
                 </div>
@@ -83,18 +63,14 @@ export default function WhyUs() {
             ))}
           </div>
 
-          {/* Banner Image Section */}
-          <div className="w-full lg:w-1/2 mt-4 lg:mt-0">
-            <div className="relative w-full aspect-[3/2] sm:aspect-[4/3] lg:aspect-auto lg:h-full">
-              <Image
-                className="rounded-lg sm:rounded-xl banner-image shadow-lg object-cover"
-                src="/images/pages/home/banner.png"
-                alt="Why Choose JEEKO - Quality Products"
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
-                priority
-              />
-            </div>
+          <div className="relative min-h-72 overflow-hidden rounded-xl shadow-sm lg:min-h-full">
+            <Image
+              src="/images/pages/home/banner.png"
+              alt="Jeeko quality products"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
+            />
           </div>
         </div>
       </div>

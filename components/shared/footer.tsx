@@ -1,198 +1,117 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
-import { IoCall } from "react-icons/io5";
-import { IoMdMail } from "react-icons/io";
-import { FaRegClock, FaWhatsapp } from "react-icons/fa6";
-import { FaLocationDot } from "react-icons/fa6";
-import { Youtube, Linkedin, FacebookIcon } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
+import { NAV_LINKS, SITE } from "@/lib/site";
 
 export default function Footer() {
-  const containerRef = useRef<HTMLElement>(null);
-
   return (
-    <footer
-      ref={containerRef}
-      className="bg-[#F7F7F9] border-t border-gray-200 mt-8 pt-10"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 pb-8">
-        {/* Brand Section */}
-        <div className="footer-section flex flex-col gap-4 sm:gap-5">
+    <footer className="mt-10 border-t bg-white">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
+        <div className="space-y-4">
           <Image
             src="/logos/primary.svg"
-            alt="Jeeko Agro Industries Logo"
-            height={50}
-            width={150}
-            className="rounded-lg p-2 w-fit"
+            alt={SITE.name}
+            width={140}
+            height={48}
           />
-          <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">
-            Jeeko Agro Industries, a leading manufacturer of high-quality
-            agricultural and farming tools, is dedicated to empowering farmers
-            and agricultural businesses with reliable, innovative, and efficient
-            equipment.
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            Quality agricultural equipment and power solutions trusted by Indian
+            farmers.
           </p>
+          <Button asChild className="w-full bg-[#25D366] hover:bg-[#1ebe5d]">
+            <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer">
+              <FaWhatsapp className="h-4 w-4" />
+              Enquire on WhatsApp
+            </a>
+          </Button>
+        </div>
 
-          <a
-            href="https://wa.me/919925232951?text=Hello, I would like to inquire about your products."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block mt-2"
-          >
-            <Button
-              className="w-full bg-[#25D366] hover:bg-[#1ebe5d] text-white flex items-center gap-2"
-              size="sm"
-            >
-              <FaWhatsapp className="w-4 h-4 sm:w-5 sm:h-5" /> Enquire on
-              WhatsApp
+        <div>
+          <h3 className="mb-3 font-semibold text-primary">Contact</h3>
+          <ul className="space-y-3 text-sm text-muted-foreground">
+            <li className="flex items-center gap-2">
+              <Phone className="h-4 w-4 shrink-0 text-primary" />
+              <a href={SITE.phoneHref} className="hover:text-foreground">
+                {SITE.phone}
+              </a>
+            </li>
+            <li className="flex items-center gap-2">
+              <Mail className="h-4 w-4 shrink-0 text-primary" />
+              <a href={SITE.emailHref} className="hover:text-foreground">
+                {SITE.email}
+              </a>
+            </li>
+            <li className="flex items-center gap-2">
+              <Clock className="h-4 w-4 shrink-0 text-primary" />
+              {SITE.hours}
+            </li>
+            <li className="flex items-start gap-2">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+              <span>{SITE.address}</span>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="mb-3 font-semibold text-primary">Quick links</h3>
+          <ul className="space-y-2 text-sm">
+            {NAV_LINKS.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="text-muted-foreground hover:text-primary"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <Link href="/contact" className="text-muted-foreground hover:text-primary">
+                Contact
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="mb-3 font-semibold text-primary">Follow us</h3>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline" size="sm">
+              <a href={SITE.social.facebook} target="_blank" rel="noopener noreferrer">
+                Facebook
+              </a>
             </Button>
-          </a>
-        </div>
-
-        {/* Contact Information */}
-        <div className="footer-section">
-          <h3 className="text-base sm:text-lg font-semibold text-primary mb-3">
-            Contact Info
-          </h3>
-          <Separator className="h-0.5 bg-primary mb-4" />
-
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-            <div className="flex items-center gap-2">
-              <span className="bg-primary rounded-xl p-2 shrink-0">
-                <IoCall className="text-white w-4 h-4 sm:w-5 sm:h-5" />
-              </span>
-              <span className="text-gray-700 text-xs sm:text-sm">
-                +91 99252 32951
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="bg-primary rounded-xl p-2 shrink-0">
-                <IoMdMail className="text-white w-4 h-4 sm:w-5 sm:h-5" />
-              </span>
-              <span className="text-gray-700 text-xs sm:text-sm">
-                jeekoagritech@gmail.com
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="bg-primary rounded-xl p-2 shrink-0">
-                <FaRegClock className="text-white w-4 h-4 sm:w-5 sm:h-5" />
-              </span>
-              <span className="text-gray-700 text-xs sm:text-sm">
-                09:00 AM - 06:00 PM
-              </span>
-            </div>
-
-            <div className="flex items-start gap-2">
-              <span className="bg-primary rounded-xl p-2 shrink-0 mt-0.5">
-                <FaLocationDot className="text-white w-4 h-4 sm:w-5 sm:h-5" />
-              </span>
-              <span className="text-gray-700 text-xs sm:text-sm leading-relaxed max-w-xs">
-                Plot no:-332, Road-R, Gate NO. 2, Phase -1 khirasara GIDC, Tal.
-                Lodhika, Rajkot -360021, Gujarat, India.
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Links */}
-        <div className="footer-section">
-          <h3 className="text-base sm:text-lg font-semibold text-primary mb-3">
-            Quick Links
-          </h3>
-          <Separator className="h-0.5 bg-primary mb-4" />
-          <div className="flex flex-col gap-2 sm:gap-3">
-            <Link
-              href="/"
-              className="text-xs sm:text-sm text-gray-700 hover:text-primary transition-colors duration-200"
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              className="text-xs sm:text-sm text-gray-700 hover:text-primary transition-colors duration-200"
-            >
-              About Us
-            </Link>
-            <Link
-              href="/kishan-king"
-              className="text-xs sm:text-sm text-gray-700 hover:text-primary transition-colors duration-200"
-            >
-              Kishan King
-            </Link>
-            <Link
-              href="/products"
-              className="text-xs sm:text-sm text-gray-700 hover:text-primary transition-colors duration-200"
-            >
-              Products
-            </Link>
-            <Link
-              href="/contact-us"
-              className="text-xs sm:text-sm text-gray-700 hover:text-primary transition-colors duration-200"
-            >
-              Contact Us
-            </Link>
-            <Link
-              href="/brochures"
-              className="text-xs sm:text-sm text-gray-700 hover:text-primary transition-colors duration-200"
-            >
-              Brochures
-            </Link>
-          </div>
-        </div>
-
-        {/* Social Media */}
-        <div className="footer-section">
-          <h3 className="text-base sm:text-lg font-semibold text-primary mb-3">
-            Connect with Us
-          </h3>
-          <Separator className="h-0.5 bg-primary mb-4" />
-          <div className="flex gap-3 mt-4">
-            <Button
-              className="rounded-full w-8 h-8 sm:w-10 sm:h-10"
-              size="icon"
-              aria-label="Facebook"
-              onClick={() =>
-                window.open(
-                  "https://www.facebook.com/profile.php?id=61555166633293"
-                )
-              }
-            >
-              <FacebookIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+            <Button asChild variant="outline" size="sm">
+              <a href={SITE.social.linkedin} target="_blank" rel="noopener noreferrer">
+                LinkedIn
+              </a>
             </Button>
-            <Button
-              className="rounded-full w-8 h-8 sm:w-10 sm:h-10"
-              size="icon"
-              aria-label="LinkedIn"
-              onClick={() =>
-                window.open(
-                  "https://www.linkedin.com/company/shubhline-automation-pvt-ltd/?viewAsMember=true"
-                )
-              }
-            >
-              <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />
+            <Button asChild variant="outline" size="sm">
+              <a href={SITE.social.instagram} target="_blank" rel="noopener noreferrer">
+                Instagram
+              </a>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <a href={SITE.social.youtube} target="_blank" rel="noopener noreferrer">
+                YouTube
+              </a>
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Copyright Section */}
-      <div className="w-full bg-primary/10 py-4 text-xs text-gray-600 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span className="text-center sm:text-left">
-            &copy; {new Date().getFullYear()} Jeeko Agro Industries. All rights
-            reserved.
+      <div className="border-t bg-primary/5 py-4 text-xs text-muted-foreground">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 sm:flex-row sm:px-6 lg:px-8">
+          <span>
+            © {new Date().getFullYear()} {SITE.name}. All rights reserved.
           </span>
           <a
             href="https://rajraiyani.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[10px] sm:text-xs text-gray-400 hover:text-gray-500 transition-colors shrink-0"
-            aria-label="Developer website"
+            className="hover:text-foreground"
           >
             rajraiyani.com
           </a>

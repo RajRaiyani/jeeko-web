@@ -1,5 +1,3 @@
-"use client";
-
 import Header from "@/components/shared/header";
 import Footer from "@/components/shared/footer";
 
@@ -9,9 +7,9 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-[#EAEAEA] w-screen">
+    <div className="min-h-screen bg-[#EAEAEA]">
       <Header />
-      {children}
+      <main>{children}</main>
       <Footer />
     </div>
   );

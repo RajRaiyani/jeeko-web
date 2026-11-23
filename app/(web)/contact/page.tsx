@@ -1,195 +1,88 @@
 import type { Metadata } from "next";
-import { IoCall } from "react-icons/io5";
-import { IoMdMail } from "react-icons/io";
-import { FaRegClock, FaLocationDot, FaWhatsapp } from "react-icons/fa6";
+import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import { ContactForm } from "@/components/pages/contact/ContactForm";
-
-const SITE_NAME = "Jeeko Agro Industries";
+import { SectionHeader } from "@/components/shared/SectionHeader";
+import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Contact Us | Sales, Support & Dealership Inquiries",
+  title: "Contact Us",
   description:
-    "Get in touch with Jeeko Agro Industries. Contact us for generators, power tillers, pumpsets, or dealer registration. Reach out via email, phone, WhatsApp or visit our facility in Rajkot, Gujarat, India.",
-  keywords: [
-    "contact Jeeko",
-    "Jeeko phone number",
-    "Jeeko email address",
-    "Jeeko factory Rajkot",
-    "agricultural dealership registration",
-    "farming equipment support",
-    "pumpset sales inquiry",
-  ],
+    "Get in touch with Jeeko Agro Industries for product inquiries, support, or dealership questions.",
   openGraph: {
-    title: "Contact Jeeko Agro Industries | Sales, Support & Dealership",
+    title: `Contact | ${SITE.name}`,
     description:
-      "Get in touch with our team for immediate product queries, dealer applications, or technical support. Available via call, email, or WhatsApp.",
+      "Reach our team in Rajkot for sales, support, and dealership inquiries.",
     url: "/contact",
-    type: "website",
-    siteName: SITE_NAME,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Contact Us | Jeeko Agro Industries",
-    description:
-      "Reach out to Jeeko team in Rajkot, Gujarat for sales support, generators, pumps, and weeders.",
   },
 };
 
+const details = [
+  { icon: Phone, label: "Call", value: SITE.phone, href: SITE.phoneHref },
+  { icon: Mail, label: "Email", value: SITE.email, href: SITE.emailHref },
+  { icon: Clock, label: "Hours", value: `${SITE.hours} · Mon–Sat` },
+  { icon: MapPin, label: "Visit", value: SITE.address },
+];
+
 export default function ContactPage() {
   return (
-    <section className="w-full min-h-[80vh] px-2 pt-0">
-      {/* Hero Section */}
-      <div className="max-w-4xl mx-auto text-center mb-12 pt-10">
-        <h1 className="text-4xl md:text-5xl font-bold mb-3">Contact Us</h1>
-        <div className="w-24 h-1 bg-primary mx-auto my-2" />
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
-          We&apos;re here to help! Reach out for product inquiries, support, or
-          just to say hello. Our team will get back to you as soon as possible.
-        </p>
-      </div>
-
-      <div className="max-w-6xl mx-auto mt-4 mb-15 rounded-xl overflow-hidden shadow-lg">
-        <iframe
-          title="Jeeko Agro Industries Location"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3904.0382621220806!2d70.63602267529136!3d22.259444179715963!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3959cd0078ebc8eb%3A0xc22087af2a2420dd!2sJEEKO%20AGRITECH%20LLP!5e1!3m2!1sen!2sin!4v1757067033891!5m2!1sen!2sin"
-          width="100%"
-          height="500"
-          style={{ border: 0 }}
-          allowFullScreen
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
+    <section className="px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl space-y-10">
+        <SectionHeader
+          as="h1"
+          title="Contact us"
+          description="Product questions, support, or dealership — we’re happy to help."
         />
-      </div>
 
-      {/* Additional Contact Information */}
-      <div className="max-w-6xl mx-auto mt-16 bg-white rounded-xl shadow-lg p-8">
-        <div className="text-center mb-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">
-            Other Ways to Reach Us
-          </h3>
-          <p className="text-gray-600">
-            Choose the method that works best for you
-          </p>
+        <div className="overflow-hidden rounded-xl shadow-sm">
+          <iframe
+            title="Jeeko Agro Industries location"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3904.0382621220806!2d70.63602267529136!3d22.259444179715963!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3959cd0078ebc8eb%3A0xc22087af2a2420dd!2sJEEKO%20AGRITECH%20LLP!5e1!3m2!1sen!2sin!4v1757067033891!5m2!1sen!2sin"
+            width="100%"
+            height="360"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="text-center p-4 border border-gray-200 rounded-lg hover:border-primary transition-colors duration-200">
-            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-              <IoCall className="w-6 h-6 text-primary" />
-            </div>
-            <h4 className="font-semibold mb-2">Sales Inquiry</h4>
-            <p className="text-sm text-gray-600">
-              For product information and quotes
-            </p>
-          </div>
+        <div className="grid gap-8 lg:grid-cols-2">
+          <div className="space-y-3">
+            {details.map((item) => {
+              const Icon = item.icon;
+              const body = (
+                <div className="flex items-start gap-3 rounded-xl bg-white p-5 shadow-sm">
+                  <span className="rounded-lg bg-primary p-2.5 text-white">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <p className="font-semibold">{item.label}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {item.value}
+                    </p>
+                  </div>
+                </div>
+              );
 
-          <div className="text-center p-4 border border-gray-200 rounded-lg hover:border-primary transition-colors duration-200">
-            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-              <IoMdMail className="w-6 h-6 text-primary" />
-            </div>
-            <h4 className="font-semibold mb-2">Technical Support</h4>
-            <p className="text-sm text-gray-600">
-              For product support and troubleshooting
-            </p>
-          </div>
+              return item.href ? (
+                <a key={item.label} href={item.href} className="block">
+                  {body}
+                </a>
+              ) : (
+                <div key={item.label}>{body}</div>
+              );
+            })}
 
-          <div className="text-center p-4 border border-gray-200 rounded-lg hover:border-primary transition-colors duration-200">
-            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-              <FaWhatsapp className="w-6 h-6 text-primary" />
-            </div>
-            <h4 className="font-semibold mb-2">Quick Chat</h4>
-            <p className="text-sm text-gray-600">
-              Instant messaging for quick questions
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="max-w-6xl mt-14 mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 pb-5 items-start">
-        {/* Contact Info */}
-        <div className="space-y-5">
-          <div className="p-6 flex items-start gap-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
-            <div className="bg-primary rounded-xl p-3">
-              <IoCall className="size-6 text-white" />
-            </div>
-            <div>
-              <div className="text-lg font-bold">Call Us</div>
-              <div className="text-gray-600">+91 99252 32951</div>
-              <div className="text-xs text-gray-500 mt-1">
-                Available during business hours
-              </div>
-            </div>
-          </div>
-
-          <div className="p-6 flex items-start gap-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
-            <div className="bg-primary rounded-xl p-3">
-              <IoMdMail className="size-6 text-white" />
-            </div>
-            <div>
-              <div className="text-lg font-bold">Email</div>
-              <div className="text-gray-600">jeekoagritech@gmail.com</div>
-              <div className="text-xs text-gray-500 mt-1">
-                We&apos;ll respond within 24 hours
-              </div>
-            </div>
-          </div>
-
-          <div className="p-6 flex items-start gap-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
-            <div className="bg-primary rounded-xl p-3">
-              <FaRegClock className="size-6 text-white" />
-            </div>
-            <div>
-              <div className="text-lg font-bold">Operational Hours</div>
-              <div className="text-gray-600">09:00 AM - 05:00 PM</div>
-              <div className="text-xs text-gray-500 mt-1">
-                Monday to Saturday
-              </div>
-            </div>
-          </div>
-
-          <div className="p-6 flex items-start gap-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
-            <div className="bg-primary rounded-xl p-3">
-              <FaLocationDot className="size-6 text-white" />
-            </div>
-            <div>
-              <div className="text-lg font-bold">Location</div>
-              <div className="text-gray-600">
-                Plot no:-332, Road-R, Gate NO. 2, Phase -1 khirasara GIDC,
-                <br />
-                Tal. Lodhika, Rajkot -360021, Gujarat, India.
-              </div>
-            </div>
-          </div>
-
-          <a
-            href="https://wa.me/919925232951?text=Hello, I would like to inquire about your products."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block"
-          >
-            <Button
-              className="w-full bg-[#25D366] hover:bg-[#1ebe5d] text-white flex items-center gap-2 shadow-lg hover:shadow-xl transition-all duration-200"
-              size="lg"
-            >
-              <FaWhatsapp className="size-5" /> Enquire on WhatsApp
+            <Button asChild className="w-full bg-[#25D366] hover:bg-[#1ebe5d]">
+              <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer">
+                <FaWhatsapp className="h-4 w-4" />
+                Enquire on WhatsApp
+              </a>
             </Button>
-          </a>
-
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
-            <p className="text-sm text-blue-800 font-medium mb-2">
-              Need immediate assistance?
-            </p>
-            <p className="text-xs text-blue-600">
-              For urgent inquiries, please call us directly or use WhatsApp for
-              faster response.
-            </p>
           </div>
-        </div>
 
-        {/* Contact Form (client component) */}
-        <div className="w-full">
           <ContactForm />
         </div>
       </div>
