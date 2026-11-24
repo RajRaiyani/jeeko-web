@@ -1,4 +1,5 @@
 import type { ProductBrand } from "@/lib/product-brands";
+import type { ProductLabel } from "@/lib/product-labels";
 
 export interface ProductImage {
   image_id?: string;
@@ -19,6 +20,7 @@ export interface Product {
   id: string;
   category_id?: string;
   brand?: ProductBrand;
+  label?: ProductLabel | "";
   name: string;
   description?: string;
   tags?: string[];

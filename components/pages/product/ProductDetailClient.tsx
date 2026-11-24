@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useCreateInquiry } from "@/hooks/useInquiry";
+import { ProductLabelBadge } from "@/components/shared/ProductLabelBadge";
 import { formatProductBrand } from "@/lib/product-brands";
 import {
   formatPrice,
@@ -191,6 +192,7 @@ export function ProductDetailClient({ product }: { product: Product }) {
                   {product.category.name}
                 </Link>
               )}
+              <ProductLabelBadge label={product.label} />
             </div>
 
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">

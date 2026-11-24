@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ProductLabelBadge } from "@/components/shared/ProductLabelBadge";
 import {
   formatPrice,
   getDiscountPercent,
@@ -29,8 +30,13 @@ export function ProductCard({
       className="group flex h-full flex-col overflow-hidden rounded-xl border border-border/80 bg-white transition-shadow hover:shadow-md"
     >
       <div className="relative aspect-square bg-muted/30">
+        <ProductLabelBadge
+          label={product.label}
+          compact
+          className="absolute top-2 left-2 z-10"
+        />
         {discounted && (
-          <span className="absolute top-2 left-2 z-10 rounded-md bg-primary px-2 py-1 text-xs font-bold text-white shadow-sm">
+          <span className="absolute top-2 right-2 z-10 rounded-md bg-primary px-2 py-1 text-xs font-bold text-white shadow-sm">
             {percent}% OFF
           </span>
         )}
