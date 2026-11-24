@@ -25,6 +25,9 @@ export interface Product {
   metadata?: Record<string, unknown>;
   sale_price?: number;
   sale_price_in_rupees?: number;
+  discount_percent?: number;
+  price_before_discount?: number;
+  price_before_discount_in_rupees?: number;
   created_at?: string;
   updated_at?: string;
   points?: string[];
@@ -56,7 +59,24 @@ export function getProductImageUrl(product: Product): string {
 }
 
 export function getProductPrice(product: Product): number {
-  return product.sale_price_in_rupees ?? product.sale_price ?? 0;
+  return Number(product.sale_price_in_rupees ?? product.sale_price ?? 0);
+}
+
+export function getPriceBeforeDiscount(product: Product): number {
+  return Number(
+    product.price_before_discount_in_rupees ??
+      (product.price_before_discount
+        ? product.price_before_discount / 100
+        : 0)
+  );
+}
+
+export function getDiscountPercent(product: Product): number {
+  return Math.max(0, Math.round(Number(product.discount_percent ?? 0)));
+}
+
+export function hasDiscount(product: Product): boolean {
+  return getDiscountPercent(product) > 0;
 }
 
 export function formatPrice(amount: number): string {

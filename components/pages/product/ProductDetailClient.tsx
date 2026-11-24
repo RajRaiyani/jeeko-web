@@ -27,8 +27,11 @@ import { useCreateInquiry } from "@/hooks/useInquiry";
 import { formatProductBrand } from "@/lib/product-brands";
 import {
   formatPrice,
+  getDiscountPercent,
+  getPriceBeforeDiscount,
   getProductImageUrl,
   getProductPrice,
+  hasDiscount,
   type Product,
 } from "@/lib/product";
 import { SITE } from "@/lib/site";
@@ -68,6 +71,9 @@ export function ProductDetailClient({ product }: { product: Product }) {
 
   const current = images[imageIndex] || images[0];
   const price = getProductPrice(product);
+  const before = getPriceBeforeDiscount(product);
+  const percent = getDiscountPercent(product);
+  const discounted = hasDiscount(product);
   const busy = form.formState.isSubmitting || createInquiry.isPending;
 
   async function onSubmit(values: FormValues) {
@@ -190,9 +196,23 @@ export function ProductDetailClient({ product }: { product: Product }) {
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
               {product.name}
             </h1>
-            <p className="text-3xl font-bold text-primary">
-              {formatPrice(price)}
-            </p>
+            <div>
+              <p className="text-3xl font-bold text-primary">
+                {formatPrice(price)}
+              </p>
+              {discounted && (
+                <p className="mt-1 flex flex-wrap items-center gap-2 text-sm">
+                  {before > price && (
+                    <span className="text-muted-foreground line-through">
+                      {formatPrice(before)}
+                    </span>
+                  )}
+                  <span className="rounded-md bg-primary/10 px-2 py-0.5 font-semibold text-primary">
+                    {percent}% OFF
+                  </span>
+                </p>
+              )}
+            </div>
 
             {!!product.points?.length && (
               <ul className="space-y-2 text-sm">

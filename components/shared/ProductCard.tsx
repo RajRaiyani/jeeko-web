@@ -2,8 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   formatPrice,
+  getDiscountPercent,
+  getPriceBeforeDiscount,
   getProductImageUrl,
   getProductPrice,
+  hasDiscount,
   type Product,
 } from "@/lib/product";
 
@@ -15,6 +18,10 @@ export function ProductCard({
   priority?: boolean;
 }) {
   const price = getProductPrice(product);
+  const before = getPriceBeforeDiscount(product);
+  const percent = getDiscountPercent(product);
+  const discounted = hasDiscount(product);
+  const showMrp = discounted && before > price;
 
   return (
     <Link
@@ -22,6 +29,11 @@ export function ProductCard({
       className="group flex h-full flex-col overflow-hidden rounded-xl border border-border/80 bg-white transition-shadow hover:shadow-md"
     >
       <div className="relative aspect-square bg-muted/30">
+        {discounted && (
+          <span className="absolute top-2 left-2 z-10 rounded-md bg-primary px-2 py-1 text-xs font-bold text-white shadow-sm">
+            {percent}% OFF
+          </span>
+        )}
         <Image
           src={getProductImageUrl(product)}
           alt={product.name}
@@ -50,9 +62,21 @@ export function ProductCard({
             ))}
           </ul>
         )}
-        <p className="mt-auto pt-2 text-lg font-bold text-primary">
-          {formatPrice(price)}
-        </p>
+        <div className="mt-auto space-y-1 pt-2">
+          <div className="flex flex-wrap items-baseline gap-2">
+            <p className="text-lg font-bold text-primary">{formatPrice(price)}</p>
+            {discounted && (
+              <span className="rounded bg-primary/10 px-1.5 py-0.5 text-xs font-semibold text-primary">
+                {percent}% off
+              </span>
+            )}
+          </div>
+          {showMrp && (
+            <p className="text-sm text-muted-foreground line-through">
+              {formatPrice(before)}
+            </p>
+          )}
+        </div>
       </div>
     </Link>
   );
