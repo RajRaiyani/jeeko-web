@@ -1,9 +1,11 @@
 import axiosInstance from "./httpServices";
 import type { ProductBrand } from "@/lib/product-brands";
+import type { ProductLabel } from "@/lib/product-labels";
 
 export async function listProducts(params?: {
   category_id?: string;
   brand?: ProductBrand;
+  label?: ProductLabel;
   search?: string;
   offset?: number;
   limit?: number;

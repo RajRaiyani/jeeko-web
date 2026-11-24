@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Hero from "@/components/pages/home/hero";
+import RecentlyAdded from "@/components/pages/home/recently-added";
 import PopularProduct from "@/components/pages/home/popular-product";
 import Brands from "@/components/pages/home/brands";
 import WhyUs from "@/components/pages/home/why-us";
@@ -27,6 +28,7 @@ export default function Home() {
     <>
       <Hero />
       <ProductCategories />
+      <RecentlyAdded />
       <PopularProduct />
       <Brands />
       <WhyUs />
